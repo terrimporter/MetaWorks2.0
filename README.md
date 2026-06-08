@@ -67,3 +67,5 @@ cd /data
 Apple Silicon (M1/M2/M3) users must include:
 
 --platform=linux/amd64
+
+Last updated: June 7, 2026
