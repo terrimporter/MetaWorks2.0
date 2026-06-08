@@ -5,6 +5,8 @@ MetaWorks 2.0 is a Dockerized pipeline for processing DNA metabarcoding data, su
 
 This version is a complete redesign of the original MetaWorks pipeline, with improved reproducibility, simplified outputs, and a fully containerized environment.
 
+Reference data is included in the Docker container and not stored in the repository.
+
 ---
 
 ## Features
