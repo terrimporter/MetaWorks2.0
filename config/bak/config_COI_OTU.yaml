@@ -1,0 +1,34 @@
+# ==================================
+# OTU clustering config (ASV to OTU)
+# ==================================
+
+# ---- INPUT DATA ----
+
+# Input from ASV pipeline
+esv_dir: "COI_ASV"
+
+# ---- OUTPUT DATA ----
+
+outdir: "COI_OTU"
+
+# ---- MARKER ----
+
+marker: "COI"
+
+# ---- OTU CLUSTERING (vsearch) ----
+
+threads:
+  vsearch: 6
+
+otu:
+  identity: 0.97        # 97% OTU clustering
+  prefix: "COI_"
+
+# ---- TAXONOMY (RDP) ----
+
+taxonomy:
+  method: "rdp"
+  memory: "-Xmx16g"
+  custom: true
+  classifier: "COI_refset/rRNAClassifier.properties"
+  jar: "rdp_classifier_2.14/dist/classifier.jar"

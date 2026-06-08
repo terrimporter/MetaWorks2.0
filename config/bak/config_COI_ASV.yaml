@@ -1,0 +1,91 @@
+# =================================
+# MetaWorks Illumina COI ASV Config
+# ================================
+
+# ---- INPUT DATA ----
+
+raw_dir: "testing/COI_data"
+pattern: "{sample}_L001_R{read}_001.fastq.gz"
+
+# ---- OUTPUT ----
+
+outdir: "COI_ASV"
+
+# ---- WORKFLOW ----
+
+workflow:
+    type: "ASV"  
+
+# ---- READ MERGING (fastp) ----
+  
+fastp:
+  threads: 4
+  merge: true
+
+  # quality filtering
+  qualified_quality_phred: 20
+  unqualified_percent_limit: 5
+
+  # overlap merging
+  overlap_len_require: 25 
+  
+# ---- PRIMER TRIMMING (cutadapt) ----
+
+cutadapt:
+  adapters: "testing/adapters_anchored.fasta"
+  min_length: 150
+  quality: "20,20"
+  error_rate: 0.1
+  overlap: 3
+  max_n: 3
+  reverse_complement: false
+
+# ---- DENOISING (vsearch) ----
+
+denoise:
+  minsize: 3
+
+# ---- ESV TABLE (vsearch) ----
+
+table:
+  threads: 4
+
+# ---- MARKER ----
+
+marker: "COI"
+
+# ---- TAXONOMY (RDP) ----
+
+rdp:
+  memory: "-Xmx16g"
+  custom: true
+  classifier: "COI_refset/rRNAClassifier.properties"
+  jar: "rdp_classifier_2.14/dist/classifier.jar"
+
+# ---- TAXON FILTERING ----
+
+tax_filter:
+  mode: 1          # 1 = include, 2 = include+exclude
+  include: "Arthropoda"
+  exclude: "Chordata"
+
+# ---- PSEUDOGENE FILTERING ----
+
+pseudogenes:
+  enabled: true
+  method: 2        # 1 = ORF length, 2 = HMM
+  hmm: "COI_hmm/bold.hmm"
+
+# ---- ORF FINDER ----
+
+orfs:
+  genetic_code: 5
+  start_mode: 2
+  min_length: 30
+  no_nested: true
+  strand: "plus"
+
+# ---- OUTPUT OPTIONS ----
+
+report:
+  type: 1         # 1 = combined, 2 = separate

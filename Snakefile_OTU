@@ -1,0 +1,16 @@
+configfile: "config/config_COI_OTU.yaml"
+
+# OTU pipeline starts from ESV outputs
+OUTDIR = config["outdir"]
+
+include: "rules/clustering_otu.smk"
+include: "rules/taxonomy_otu.smk"
+include: "rules/results_otu.smk"
+
+rule all:
+    input:
+        OUTDIR + "/otu.table",
+        OUTDIR + "/otu.taxonomy.csv",
+        OUTDIR + "/otu.results.csv",
+        OUTDIR + "/.cleanup_done"
+

@@ -1,0 +1,7 @@
+Test	ReportType	PseudogeneRemoval	PseudogeneRemovalType	NumASVs	NumOTUs
+Test1	1	false	N/A	336	98
+Test2	1	true	1	334	96
+Test3	1	true	2	230	38
+Test4	2	false	N/A	336	98
+Test5	2	true	1	334	96
+Test6	2	true	2	230	38

@@ -1,0 +1,98 @@
+configfile: "config/config_COI_ASV.yaml"
+
+# --------------------------------------------------
+# Detect samples
+# --------------------------------------------------
+
+SAMPLES, READS = glob_wildcards(
+    config["raw_dir"] + "/" + config["pattern"]
+)
+SAMPLES_UNIQUE = list(set(SAMPLES))
+
+print("Detected samples:", SAMPLES_UNIQUE)
+
+# --------------------------------------------------
+# Include pipeline modules
+# --------------------------------------------------
+
+include: "rules/preprocessing.smk"
+include: "rules/stats_summary.smk"
+include: "rules/merging.smk"
+include: "rules/trimming.smk"
+include: "rules/aggregation.smk"
+include: "rules/denoising.smk"
+include: "rules/taxonomy.smk"
+
+# Pseudogene handling (ASV only)
+if config["pseudogenes"]["enabled"]:
+    if config["workflow"]["type"] == "ASV":
+        include: "rules/pseudogene_asv.smk"
+
+# Shared result processing
+include: "rules/results.smk"
+
+# Report-specific outputs
+if config["report"]["type"] == 1:
+    include: "rules/results_report1.smk"
+else:
+    include: "rules/results_report2.smk"
+
+# ITS optional processing
+if config["marker"] in ["ITS_fungi", "ITS_plants"]:
+    include: "rules/itsx.smk"
+
+# --------------------------------------------------
+# Define final outputs
+# --------------------------------------------------
+
+if config["report"]["type"] == 1:
+
+    # --- ESV table selection ---
+    esv_table = config["outdir"] + (
+        "/ESV.table.filtered"
+        if config["pseudogenes"]["enabled"]
+        else "/ESV.table"
+    )
+
+    final_inputs = [
+        config["outdir"] + "/stats/pipeline_stats.tsv",
+        config["outdir"] + "/taxonomy.csv",
+        esv_table,
+        config["outdir"] + "/results_report1.csv",
+        config["outdir"] + "/final_sequences.fasta"   
+    ]
+
+    # Only include HMM taxonomy if method 2
+    if config["pseudogenes"]["enabled"] and config["pseudogenes"]["method"] == 2:
+        final_inputs.append(config["outdir"] + "/taxonomy_ORF.tsv")
+
+else:
+
+    # --- ESV table selection ---
+    esv_table = config["outdir"] + (
+        "/ESV.table.filtered"
+        if config["pseudogenes"]["enabled"]
+        else "/ESV.table"
+    )
+
+    final_inputs = [
+        config["outdir"] + "/stats/pipeline_stats.tsv",
+        config["outdir"] + "/results_report2.csv",
+        config["outdir"] + "/taxonomy.csv",
+        esv_table,
+        config["outdir"] + "/final_sequences.fasta"
+    ]
+
+# --------------------------------------------------
+# Add cleanup step (remove longest.orfs.fasta)
+# --------------------------------------------------
+
+final_inputs.append(config["outdir"] + "/.cleanup_orfs_done")
+
+# --------------------------------------------------
+# Final rule
+# --------------------------------------------------
+
+rule all:
+    input:
+        final_inputs

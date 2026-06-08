@@ -1,0 +1,4 @@
+file,type,description
+ESV.table.filtered,abundance,ESV abundance table
+taxonomy.csv,taxonomy,RDP classification output
+final_sequences.fasta,sequence,Final ASV sequences used for taxonomic assignment

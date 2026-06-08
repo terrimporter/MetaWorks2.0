@@ -39,8 +39,29 @@ Support for additional marker types will be added in future releases:
 
 ## Quick Start
 
-### 1. Clone repository
+Clone the repository and enter the directory:
 
-```bash
 git clone https://github.com/terrimporter/MetaWorks2.0.git
 cd MetaWorks2.0
+
+Pull the pre-built Docker image:
+
+docker pull terrimporter/metaworks2:latest
+
+Run the container:
+
+docker run --platform=linux/amd64 -it terrimporter/metaworks2:latest
+
+For reproducibility, use a fixed version:
+
+docker pull terrimporter/metaworks2:2.0.0
+docker run --platform=linux/amd64 -it terrimporter/metaworks2:2.0.0
+
+To run on your own data:
+
+docker run --platform=linux/amd64 -it -v $(pwd):/data terrimporter/metaworks2:latest
+cd /data
+
+Apple Silicon (M1/M2/M3) users must include:
+
+--platform=linux/amd64
