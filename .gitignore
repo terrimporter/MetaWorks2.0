@@ -1,0 +1,9 @@
+COI_refset/
+rdp_classifier_2.14/
+testing/
+*.fastq
+*.fastq.gz
+*.fasta
+*.fa
+
+
